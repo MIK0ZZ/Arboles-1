@@ -45,10 +45,10 @@ public class BST {
         }
 
         if((_current.left != null && _current.right != null) || (_current.left == null && _current.right == null)) {
-            return (isStrictRecursive(_current.left) && isStrictRecursive(_current.right));
+            return false;
         }
 
-        return false;
+        return (isStrictRecursive(_current.left) && isStrictRecursive(_current.right));
        
     }
 
@@ -77,11 +77,14 @@ public class BST {
     }
 
     private int treeMaxRecursive(Node _current) {
-        if(_current.right == null) {
-            return _current.value;
+        if(_current == null) {
+            return -1;
         }
-
-        return treeMaxRecursive(_current.right);
+        // Antes lo tenía para mirar solo a la derecha, pero lo he cambiado porque tomamos que no es un BST sino un BT. xd
+        int max = _current.value;
+        int maxR = treeMaxRecursive(_current.right);
+        int maxL = treeMaxRecursive(_current.left);
+        return Math.max(Math.max(maxR, maxL), max);
     }
 
     //4
@@ -98,6 +101,23 @@ public class BST {
         int right = nodeAmountRec(_current.right);
 
         return 1 + left + right;
+    }
+
+    //5
+    public boolean isIdentical(BST _other){
+        return isIdenticalRec(this.root, _other.root);
+    }
+
+    private boolean isIdenticalRec(Node _current, Node _otherCurrent) {
+        if(_current == null && _otherCurrent == null) {
+            return true;
+        }
+
+        if(_current == null || _otherCurrent == null) {
+            return false;
+        }
+
+        return (_current.value == _otherCurrent.value) && isIdenticalRec(_current.left, _otherCurrent.left) && isIdenticalRec(_current.right, _otherCurrent.right);
     }
 
     //6
@@ -127,10 +147,7 @@ public class BST {
             return 0;
         }
 
-        int left = nodeSumAmountRec(_current.left);
-        int right = nodeSumAmountRec(_current.right);
-
-        return _current.value + left + right;
+        return _current.value + nodeSumAmountRec(_current.left) + nodeSumAmountRec(_current.right);
     }
 
     //8
@@ -143,9 +160,6 @@ public class BST {
             return 0;
         }
 
-        int left = nodeEvenSumAmountRec(_current.left);
-        int right = nodeEvenSumAmountRec(_current.right);
-
-        return _current.value % 2 == 0 ? _current.value + left + right : 0;
+        return _current.value % 2 == 0 ? _current.value + nodeEvenSumAmountRec(_current.left) + nodeEvenSumAmountRec(_current.right) : 0;
     }
 }
